@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -9,6 +8,12 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
 
+  final _pages = [
+    HomePage(),
+    PageWidget(title: 'Players'),
+    PageWidget(title: 'Settings'),
+  ];
+
   void onTapped(int index) {
     setState(() {
       _currentIndex = index;
@@ -17,16 +22,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final _pageWidgets = [
-      buildFloatingSearchBar(context),
-      PageWidget(title: 'Players'),
-      PageWidget(title: 'Settings'),
-    ];
     return Scaffold(
       appBar: AppBar(
         title: Text('Apex Players'),
       ),
-      body: _pageWidgets.elementAt(_currentIndex),
+      body: _pages.elementAt(_currentIndex),
       bottomNavigationBar: BottomNavigationBar(
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
@@ -38,6 +38,147 @@ class _HomeScreenState extends State<HomeScreen> {
         currentIndex: _currentIndex,
         onTap: onTapped,
       ),
+    );
+  }
+}
+
+class HomePage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(top: 20.0, left: 20.0, right: 20.0, bottom: 0),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Container(
+              height: 200,
+              width: 300,
+              decoration: BoxDecoration(
+                color: Colors.blueGrey,
+                borderRadius: BorderRadius.circular(30.0),
+              ),
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    SizedBox(height: 10.0),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: <Widget>[
+                        Container(
+                          height: 100,
+                          width: 100,
+                          color: Colors.white,
+                        ),
+                        Container(
+                          height: 100,
+                          width: 100,
+                          color: Colors.white,
+                        ),
+                        Container(
+                          height: 100,
+                          width: 100,
+                          color: Colors.white,
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 10.0),
+                    Row(
+                      children: [
+                        SizedBox(
+                          width: 13.0,
+                        ),
+                        Text(
+                          'Featured Apex Team',
+                          style: TextStyle(fontSize: 18.0),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        SizedBox(
+                          width: 20.0,
+                        ),
+                        Text(
+                          'Fennel',
+                          style: TextStyle(
+                              fontSize: 33.0, fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 20.0,
+            ),
+            Text(
+              'Your Live Players',
+              style: TextStyle(
+                fontSize: 24.0,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(
+              height: 20.0,
+            ),
+            Column(
+              children: <Widget>[
+                YourLivePlayerWidget(),
+                YourLivePlayerWidget(),
+                YourLivePlayerWidget(),
+                YourLivePlayerWidget(),
+                YourLivePlayerWidget(),
+                YourLivePlayerWidget(),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class YourLivePlayerWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Container(
+          height: 120,
+          width: 400,
+          decoration: BoxDecoration(
+            color: Colors.blueGrey,
+            borderRadius: BorderRadius.circular(30.0),
+          ),
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
+            child: Row(
+              children: <Widget>[
+                Container(),
+                Column(
+                  children: <Widget>[
+                    Row(
+                      children: [
+                        Container(),
+                        Text('Streamer Name'),
+                      ],
+                    ),
+                    Text('Title'),
+                    Text('Viewers'),
+                  ],
+                )
+              ],
+            ),
+          ),
+        ),
+        SizedBox(
+          height: 12.0,
+        ),
+      ],
     );
   }
 }
@@ -60,53 +201,4 @@ class PageWidget extends StatelessWidget {
       ),
     );
   }
-}
-
-Widget buildFloatingSearchBar(BuildContext context) {
-  final isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
-
-  return FloatingSearchBar(
-    hint: 'Search...',
-    scrollPadding: const EdgeInsets.only(top: 16, bottom: 56),
-    transitionDuration: const Duration(milliseconds: 800),
-    transitionCurve: Curves.easeInOut,
-    physics: const BouncingScrollPhysics(),
-    axisAlignment: isPortrait ? 0.0 : -1.0,
-    openAxisAlignment: 0.0,
-    width: isPortrait ? 600 : 500,
-    debounceDelay: const Duration(milliseconds: 500),
-    onQueryChanged: (query) {
-      // Call your model, bloc, controller here.
-    },
-    // Specify a custom transition to be used for
-    // animating between opened and closed stated.
-    transition: CircularFloatingSearchBarTransition(),
-    actions: [
-      FloatingSearchBarAction(
-        showIfOpened: false,
-        child: CircularButton(
-          icon: const Icon(Icons.place),
-          onPressed: () {},
-        ),
-      ),
-      FloatingSearchBarAction.searchToClear(
-        showIfClosed: false,
-      ),
-    ],
-    builder: (context, transition) {
-      return ClipRRect(
-        borderRadius: BorderRadius.circular(8),
-        child: Material(
-          color: Colors.white,
-          elevation: 4.0,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: Colors.accents.map((color) {
-              return Container(height: 112, color: color);
-            }).toList(),
-          ),
-        ),
-      );
-    },
-  );
 }
